@@ -1,0 +1,5 @@
+[package]
+name = "homework"
+version = "0.0.1"
+entrypoint = "lib.typ"
+compiler = "0.12.0"
