@@ -72,35 +72,51 @@
       #if slides_counter == true {
         v(-space/1.5)
         align(right+top)[
-          // Dots before the current slide
+
           #context {
-            let before = query(selector(heading).before(here()))
-            for i in before {
+            let curr_page = here().page()
+            let all_h2 = query(selector(heading.where(level: 2)))
+            let curr_h2 = all_h2.rev().find(x => x.location().page() <= curr_page)
+            let curr_h2_page = curr_h2.location().page()
+
+            let last_h1 = query(selector(heading.where(level: 1))).rev().find(x => x.location().page() <= here().page())
+            let next_h1 = query(selector(heading.where(level: 1))).find(x => x.location().page() >= here().page())
+            let h2s_before = query(
+              selector(heading.where(level: 2)).before(curr_h2.location())
+            )
+              .filter(x => x.location().page() < curr_h2_page)
+              .filter(x => if last_h1 != none {x.location().page() >= last_h1.location().page()} else {true})
+              .filter(x => if next_h1 != none {x.location().page() <= next_h1.location().page()} else {true})
+
+            let h2s_after = query(
+              selector(heading.where(level: 2)).after(curr_h2.location())
+            ).slice(1)
+              .filter(x => if last_h1 != none {x.location().page() >= last_h1.location().page()} else {true})
+              .filter(x => if next_h1 != none {x.location().page() <= next_h1.location().page()} else {true})
+
+            // Dots before the current slide
+            for h in h2s_before {
               [
-                #link(i.location())[
-                  #box(circle(radius: 0.08cm, fill: fill-color, stroke: 1pt+fill-color)) 
+                #link(h.location())[
+                  #box(circle(radius: 0.08cm, stroke: 1pt+fill-color)) 
                 ]
               ]
             }   
-          }
-          // current slide
-          #context {
-            let current = query(selector(heading).after(here())).first()
-            link(current.location())[
-                  #box(circle(radius: 0.08cm, fill: fill-color, stroke: 1pt+fill-color)) 
-                ]
-          }
-          // Dots after current slide
-          #context {
-            let after = query(selector(heading).after(here())).slice(1)
-            for i in after {
+
+            link(curr_h2.location())[
+              #box(circle(radius: 0.08cm, fill: fill-color, stroke: 1pt+fill-color)) 
+            ]
+
+            for h in h2s_after {
               [
-                #link(i.location())[
+                #link(h.location())[
                   #box(circle(radius: 0.08cm, stroke: 1pt+fill-color))
                 ]
               ]
             }   
+
           }
+
         ]
       }
     ],
@@ -235,6 +251,7 @@
 
   // Code
   show raw.where(block: false): it => {
+    set text(font: "Hack")
     box(
       fill: body-color.lighten(70%), 
       outset: (y: 0.3em),
@@ -246,6 +263,7 @@
   }
 
   show raw.where(block: true): it => { 
+    set text(font: "Hack")
     block(
       fill: body-color.lighten(70%), 
       inset: 0.6em,
