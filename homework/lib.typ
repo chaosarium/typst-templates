@@ -1,5 +1,3 @@
-#let total_pages = locate(loc=>counter(page).final(loc).at(0))
-
 #let homework_layout(doc, 
   title,
   font: "auto",
@@ -13,10 +11,10 @@
       x: 1in,
     ),
     paper: "us-letter",
-    header: [
+    header: context [
       #grid(columns: (2fr, 1fr), gutter: 1pt,
         align(left)[#title],
-        align(right)[Page #counter(page).display() of #total_pages]
+        align(right)[#counter(page).display("1 of 1", both: true)]
       )
       #v(-8pt)
       #line(length: 100%, stroke: 0.5pt)
@@ -49,5 +47,19 @@
     width: 100%,
     radius: 1pt,
   )
+  
+  show table: set table(
+    stroke: (x, y) => (
+      x: none,
+      bottom: 0.8pt+black,
+      top: if y == 0 {0.8pt+black} else if y==1 {0.4pt+black} else { 0pt },
+    )
+  )
+  // show table.cell.where(y: 0): set text(
+  //   style: "normal", weight: "bold") // for first / header row
+  set table.hline(stroke: 0.4pt+black)
+  set table.vline(stroke: 0.4pt)
+
+
   doc
 }
