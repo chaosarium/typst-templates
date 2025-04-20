@@ -300,14 +300,18 @@
   // Outline
   set outline(
     // target: heading.where(level: 1),
-    indent: true,
+    indent: auto,
+  )
+  set outline.entry(
+    // target: heading.where(level: 1),
     fill: line(length: 100%, stroke: (thickness: 1pt, dash: "dotted", paint: header-color)),
   )
   show outline: set heading(level: 2)
   if (toc == true) {
     outline()
   }
-  
+  import "@preview/cheq:0.2.2": checklist
+  show: checklist
 
   // Content
   content
